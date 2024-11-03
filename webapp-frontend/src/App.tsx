@@ -1,23 +1,18 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Brain, Home, BarChart2, Mic } from "lucide-react"
-import HomeScreen from "./components/home-screen"
-import DailyTherapySession from "./components/daily-therapy-session"
-import UserHistory from "./components/user-history/user-history"
+import { Package, LayoutDashboard } from "lucide-react"
+import CargoScanner from "./cargo-scanner"
+import Dashboard from "./dashboard"
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState("home")
+  const [currentScreen, setCurrentScreen] = useState<"scanner" | "dashboard">("scanner")
 
   const renderScreen = () => {
     switch (currentScreen) {
-      case "home":
-        return <HomeScreen />
-      case "daily":
-        return <UserHistory />
-      case "record":
-        return <DailyTherapySession />
+      case "dashboard":
+        return <Dashboard />
       default:
-        return <HomeScreen />
+        return <CargoScanner />
     }
   }
 
@@ -26,24 +21,19 @@ export default function App() {
       {/* Top Bar */}
       <header className="bg-blue-600 text-white p-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Brain className="h-6 w-6" />
-          <h1 className="text-xl font-bold">NeuroLinguist.ai</h1>
+          <Package className="h-6 w-6" />
+          <h1 className="text-xl font-bold">CargoScan</h1>
         </div>
-        <nav className="hidden md:block">
+        <nav>
           <ul className="flex space-x-4">
             <li>
-              <Button variant="ghost" onClick={() => setCurrentScreen("home")}>
-                Home
+              <Button variant="ghost" onClick={() => setCurrentScreen("scanner")}>
+                Cargo Scanner
               </Button>
             </li>
             <li>
-              <Button variant="ghost" onClick={() => setCurrentScreen("daily")}>
-                Daily Assessment
-              </Button>
-            </li>
-            <li>
-              <Button variant="ghost" onClick={() => setCurrentScreen("record")}>
-                My Record
+              <Button variant="ghost" onClick={() => setCurrentScreen("dashboard")}>
+                Dashboard
               </Button>
             </li>
           </ul>
@@ -62,30 +52,20 @@ export default function App() {
             <Button
               variant="ghost"
               className="w-full py-4"
-              onClick={() => setCurrentScreen("record")}
+              onClick={() => setCurrentScreen("scanner")}
             >
-              <Mic className="h-6 w-6" />
-              <span className="sr-only">My Record</span>
+              <Package className="h-6 w-6" />
+              <span className="sr-only">Cargo Scanner</span>
             </Button>
           </li>
           <li className="flex-1">
             <Button
               variant="ghost"
               className="w-full py-4"
-              onClick={() => setCurrentScreen("home")}
+              onClick={() => setCurrentScreen("dashboard")}
             >
-              <Home className="h-6 w-6" />
-              <span className="sr-only">Home</span>
-            </Button>
-          </li>
-          <li className="flex-1">
-            <Button
-              variant="ghost"
-              className="w-full py-4"
-              onClick={() => setCurrentScreen("daily")}
-            >
-              <BarChart2 className="h-6 w-6" />
-              <span className="sr-only">Daily Assessment</span>
+              <LayoutDashboard className="h-6 w-6" />
+              <span className="sr-only">Dashboard</span>
             </Button>
           </li>
         </ul>
