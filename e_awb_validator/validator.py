@@ -45,7 +45,7 @@ def ValidateAWB(waybillNumber:str):
         regex2 = re.search(r'([X\d]{3})([X\d]{7})([X\d])',waybillNumber)
         # Not any acceptable input
         if regex1 == None and regex2 == None:
-            return dict(value=False,
+            return dict(valid=False,
                         reason=f"Wrong Format {waybillNumber}",
                         suggestions=[])
         airlinePrefixStr = regex1.group(1) if regex1 != None else regex2.group(1)
@@ -54,7 +54,7 @@ def ValidateAWB(waybillNumber:str):
         
         # Airline prefix cannot be fixed since check digit does not apply to first 3 digits
         if 'X' in airlinePrefixStr:
-            return dict(value=False,
+            return dict(valid=False,
                         reason=f"Invalid Airline Prefix {airlinePrefixStr} (First 3 characters)",
                         suggestions=[])
         # Serial number can be fixed if only 1 digit is missing and check digit is not missing
@@ -64,18 +64,18 @@ def ValidateAWB(waybillNumber:str):
                 testSerialNumberStr = serialNumberStr.replace('X',str(i))
                 if(int(testSerialNumberStr)%7==int(checkDigitStr)):
                     suggestions.append(f'{airlinePrefixStr}-{testSerialNumberStr}{checkDigitStr}')
-            return dict(value=False,
+            return dict(valid=False,
                         reason=f"Invalid serial number {serialNumberStr} (7 characters after the first 3)",
                         suggestions=suggestions)
         # Check digit missing, serial number are not missing
         if 'X' in checkDigitStr and 'X' not in serialNumberStr:
             missingCheckDigit = int(serialNumberStr)%7
             suggestions = [f"{airlinePrefixStr}-{serialNumberStr}{missingCheckDigit}"]
-            return dict(value=False,
+            return dict(valid=False,
                         reason=f"Invalid check digit {checkDigitStr} (Last character)",
                         suggestions=suggestions)
         # Correct format input for unintelligible, but no suggestions
-        return dict(value=False,
+        return dict(valid=False,
                     reason=f"Invalid waybill number {waybillNumber}",
                     suggestions=[])
             
