@@ -91,22 +91,22 @@ def ValidateAWB(waybillNumber:str):
                 suggestions=[])
     
     
-testcases = [
-    "123-12312312",
-    "123-12312311",
-    "12312312312",
-    "12312312311",
-	"12X-12312312",
-    "456-12X12311",
-    "123-1231231X",
-    "12X12312312",
-    "12312X12312",
-    "1231231231X",
-    "12--12312312",
-    "123-000000X1",
-    "123-14184X9X"
-]
-for testcase in testcases:
-    print(f"Testing:{testcase}\n{ValidateAWB(testcase)}")
-    print(str("abcdefg").count('h'))
+# testcases = [
+#     "123-12312312",
+#     "123-12312311",
+#     "12312312312",
+#     "12312312311",
+#     "12X-12312312",
+#     "456-12X12311",
+#     "123-1231231X",
+#     "12X12312312",
+#     "12312X12312",
+#     "1231231231X",
+#     "12--12312312",
+#     "123-000000X1",
+#     "123-14184X9X"
+# ]
+# for testcase in testcases:
+#     print(f"Testing:{testcase}\n{ValidateAWB(testcase)}")
+#     print(str("abcdefg").count('h'))
     # print(re.search(r'(\d{3})-(\d{7})(\d)',testcase).group(1))
