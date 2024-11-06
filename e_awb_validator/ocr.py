@@ -3,7 +3,7 @@ import boto3
 import io
 from PIL import Image, ImageDraw
 import json
-import validator
+from .validator import ValidateAWB
 
 def process_text_analysis(s3_connection, client, bucket, document):
 
@@ -26,6 +26,16 @@ def process_text_analysis(s3_connection, client, bucket, document):
             result.append(dict(Confidence=block['Confidence'],Text=block['Text']))
     return result
 
+def process_text_analysis_image_binary(image_binary,client):
+    response = client.analyze_document(Document={'Bytes': image_binary},FeatureTypes=['TABLES'])
+
+    result =[]
+    blocks=response['Blocks']
+    for block in blocks:
+        if block['BlockType'] == 'LINE':
+            result.append(dict(Confidence=block['Confidence'],Text=block['Text']))
+    return result
+
 def filter_non_awb(blocks:list):
     awbcandidates=[]
     # Extract possible awb from blocks
@@ -36,8 +46,8 @@ def filter_non_awb(blocks:list):
             if char.isdigit() or char=='-':
                 awbcandidate+=char
         # awbcandidates.append(awbcandidate)
-        print(validator.ValidateAWB(awbcandidate))
-        if validator.ValidateAWB(awbcandidate)['valid']:
+        print(ValidateAWB(awbcandidate))
+        if ValidateAWB(awbcandidate)['valid']:
             awbcandidates.append(awbcandidate)
                 
     # Validate awb candidates
@@ -57,8 +67,16 @@ def searchAWBbyOCR(imageID):
     # document = "WhatsApp Image 2024-11-06 at 17.13.09.jpeg"
     document = imageID
     result=process_text_analysis(s3_connection, client, bucket, document)
-    validAWB = filter_non_awb(result)
-    print(validAWB)
-    return validAWB
+    validAWBs = filter_non_awb(result)
+    print(validAWBs)
+    return validAWBs
 
 
+def searchAWBbyOCRimagebinary(image_binary):
+    session = boto3.Session()
+    client = session.client('textract', region_name='ap-southeast-1')
+    result=process_text_analysis_image_binary(image_binary,client)
+    
+    validAWBs = filter_non_awb(result)
+    print(validAWBs)
+    return validAWBs
