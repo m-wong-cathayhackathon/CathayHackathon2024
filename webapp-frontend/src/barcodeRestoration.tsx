@@ -108,16 +108,16 @@ export default function CargoScanner() {
     <div className="container mx-auto p-4 max-w-2xl">
       <Tabs defaultValue="barcode" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="barcode">Code Restoration & Suggestions</TabsTrigger>
-          <TabsTrigger value="description">Semantic AWB Finder</TabsTrigger>
+          <TabsTrigger value="barcode">Image Search</TabsTrigger>
+          <TabsTrigger value="description">Cargo Chat</TabsTrigger>
         </TabsList>
 
         <TabsContent value="barcode">
           <Card>
             <CardHeader>
-              <CardTitle>Barcode repair</CardTitle>
+              <CardTitle>AWB Recognition</CardTitle>
               <CardDescription>
-                Scan a barcode, upload an image, or manually enter the code
+                Take a picture, we'll make your life easier.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -176,7 +176,7 @@ export default function CargoScanner() {
                 </div>
               )}
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="manual-code">Manual Code Entry</Label>
                 <div className="flex gap-2">
                   <Input
@@ -193,7 +193,7 @@ export default function CargoScanner() {
                     <Search className="h-4 w-4" />
                   </Button>
                 </div>
-              </div>
+              </div> */}
 
               {searchResults && (
                 <div className="space-y-4 pt-4">
@@ -245,7 +245,7 @@ export default function CargoScanner() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="length">Length</Label>
+                  <Label htmlFor="length">Length (cm)</Label>
                   <Input
                     id="length"
                     placeholder="Length"
@@ -254,7 +254,7 @@ export default function CargoScanner() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="width">Width</Label>
+                  <Label htmlFor="width">Width (cm)</Label>
                   <Input
                     id="width"
                     placeholder="Width"
@@ -263,7 +263,7 @@ export default function CargoScanner() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="height">Height</Label>
+                  <Label htmlFor="height">Height (cm)</Label>
                   <Input
                     id="height"
                     placeholder="Height"

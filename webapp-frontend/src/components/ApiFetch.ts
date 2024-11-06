@@ -1,6 +1,11 @@
 // Simulated delay to mimic network request
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const API_URL = "http://13.250.60.84:8000"
+const API_AWB_VALIDATE_URL = `${API_URL}/awb/` // post
+const API_AWB_TEXT_EXTRACT = `${API_URL}/awb/` // get
+const API_AWB_SEM_SEARCH = `${API_URL}/search/` // post
+
 // Types
 type BarcodeSearchResult = {
   exists: boolean;
@@ -9,7 +14,7 @@ type BarcodeSearchResult = {
 };
 
 type DescriptionSearchResult = {
-  matches: Array<{ awb: string; confidence: number }>;
+  matches: Array<{ id: string; description: string; dimensions: string; }>;
 };
 
 // API functions
@@ -41,9 +46,9 @@ export async function searchByDescription(description: string, dimensions?: { le
   // Simulate semantic search
   return {
     matches: [
-      { awb: "XYZ789012", confidence: 92 },
-      { awb: "XYZ789013", confidence: 85 },
-      { awb: "XYZ789014", confidence: 78 }
+      { id: "421-98765432", description: "A shipment of 50 LCD monitors, model HM278, packed in individual boxes with protective foam." },
+      { id: "753-12345678", description: "20 units of high-definition LED screens, model SL-4K,  for a digital signage project." },
+      { id: "298-87654321", description: "" }
     ]
   };
 }
