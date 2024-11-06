@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Package, LayoutDashboard } from "lucide-react"
-import CargoScanner from "./cargo-scanner"
+import CargoScanner from "./barcodeRestoration"
 import Dashboard from "./dashboard"
 
 export default function App() {
