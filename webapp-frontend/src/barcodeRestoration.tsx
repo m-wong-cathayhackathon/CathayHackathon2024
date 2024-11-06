@@ -19,7 +19,7 @@ export default function CargoScanner() {
     confidence?: number[]
   }>(null)
   const [descriptionResults, setDescriptionResults] = useState<null | {
-    matches: Array<{  id: string; description: string; dimensions: string;  }>
+    data: Array<{  id: string; description: string; dimensions: string;  }>
   }>(null)
   const [activeInput, setActiveInput] = useState("")
   const [dimensions, setDimensions] = useState({ length: "", width: "", height: "" })
@@ -286,23 +286,25 @@ export default function CargoScanner() {
                 Search
               </Button>
 
-              {/* {descriptionResults && (
+              {descriptionResults && (
                 <div className="space-y-2 pt-4">
                   <Label>Matching AWB Numbers:</Label>
-                  {descriptionResults.matches.map((match) => (
-                    <div key={match.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 border rounded-lg">
-                      <span className="font-mono text-sm sm:text-base">{match.awb}</span>
-                      <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <Progress value={match.confidence} className="flex-1" />
-                        <span className="text-sm text-muted-foreground whitespace-nowrap">
-                          {match.confidence}%
-                        </span>
+                  {descriptionResults.data.map((match) => (
+                    <Card className="w-full max-w-xs">
+                    <CardContent className="p-3">
+                      <div className="flex justify-between items-center mb-1">
+                      <Badge variant="secondary" className="text-xs">{match.id}</Badge>
+                      <Badge variant="outline" className="text-xs">{match.dimensions}</Badge>
                       </div>
-                    </div>
+                      <p className="text-sm text-muted-foreground truncate" title={match.description}>
+                      {match.description}
+                      </p>
+                      </CardContent>
+                      </Card>
                   ))}
                 </div>
-              )} */}
-              
+              )}
+
             </CardContent>
           </Card>
         </TabsContent>

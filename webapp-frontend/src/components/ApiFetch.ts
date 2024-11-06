@@ -3,7 +3,7 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const API_URL = "http://13.250.60.84:8000"
 const API_AWB_VALIDATE_URL = `${API_URL}/awb/` // post
-const API_AWB_TEXT_EXTRACT = `${API_URL}/awb/` // get
+const API_AWB_TEXT_EXTRACT = `${API_URL}/awb/` // put
 const API_AWB_SEM_SEARCH = `${API_URL}/search/` // post
 
 // Types
@@ -14,7 +14,7 @@ type BarcodeSearchResult = {
 };
 
 type DescriptionSearchResult = {
-  matches: Array<{ id: string; description: string; dimensions: string; }>;
+  data: Array<{ id: string; description: string; dimensions: string; }>;
 };
 
 type BarcodeValidateResult = {
@@ -63,16 +63,21 @@ export async function searchByCode(code: string): Promise<BarcodeSearchResult> {
 }
 
 export async function searchByDescription(description: string, dimensions?: { length: string; width: string; height: string }): Promise<DescriptionSearchResult> {
-  await delay(1000); // Simulate network delay
+  // await delay(1000); // Simulate network delay
 
-  // Simulate semantic search
-  return {
-    matches: [
-      { id: "421-98765432", description: "A shipment of 50 LCD monitors, model HM278, packed in individual boxes with protective foam." },
-      { id: "753-12345678", description: "20 units of high-definition LED screens, model SL-4K,  for a digital signage project." },
-      { id: "298-87654321", description: "" }
-    ]
-  };
+  const response = await fetch(API_AWB_SEM_SEARCH, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({"query": description, "dimensions": `${dimensions?.height}cm x ${dimensions?.length}cm x ${dimensions?.width}cm`}),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
 }
 
 export async function processImage(image: File): Promise<{ detectedCode: string; searchResult: BarcodeSearchResult }> {
@@ -82,7 +87,7 @@ export async function processImage(image: File): Promise<{ detectedCode: string;
   data.append('img', image)
 
   const response = await fetch(API_AWB_TEXT_EXTRACT, {
-    method: 'GET',
+    method: 'PUT',
     body: data
   });
 
@@ -90,7 +95,8 @@ export async function processImage(image: File): Promise<{ detectedCode: string;
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const resJson = response.json();
+  const resJson = await response.json();
+  console.table(resJson);
 
   if  (!('data' in resJson)) {
     throw new Error(`Res json incorrect = ${resJson}`);
