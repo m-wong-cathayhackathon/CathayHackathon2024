@@ -8,7 +8,7 @@ class AWBValidatorView(APIView):
     parser_classes = [MultiPartParser, JSONParser]
 
     # File upload handling
-    def get(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         if 'img' not in request.FILES:
             return JsonResponse({'error': 'There is no img attribute in the form!'}, status=400)
         

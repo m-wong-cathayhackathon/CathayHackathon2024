@@ -17,6 +17,28 @@ type DescriptionSearchResult = {
   matches: Array<{ id: string; description: string; dimensions: string; }>;
 };
 
+type BarcodeValidateResult = {
+  valid: boolean;
+  reason: string;
+  suggestions: Array<string>;
+}
+
+export async function checkCodeValid(code: string): Promise<BarcodeValidateResult> {
+  const response = await fetch(API_AWB_VALIDATE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({"awb": code}),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 // API functions
 export async function scanBarcode(image: File): Promise<BarcodeSearchResult> {
   await delay(1500); // Simulate network delay
@@ -56,12 +78,30 @@ export async function searchByDescription(description: string, dimensions?: { le
 export async function processImage(image: File): Promise<{ detectedCode: string; searchResult: BarcodeSearchResult }> {
   await delay(2000); // Simulate image processing delay
 
+  var data = new FormData()
+  data.append('img', image)
+
+  const response = await fetch(API_AWB_TEXT_EXTRACT, {
+    method: 'GET',
+    body: data
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const resJson = response.json();
+
+  if  (!('data' in resJson)) {
+    throw new Error(`Res json incorrect = ${resJson}`);
+  }
+
   // Simulate image processing and code detection
-  const detectedCode = "DEF987654";
+  const detectedCode = resJson.data.toString();
   const searchResult: BarcodeSearchResult = {
-    exists: false,
-    possibleMatches: ["DEF987654", "DEF987655", "DEF987656"],
-    confidence: [90, 80, 70]
+    exists: true,
+    possibleMatches: [detectedCode],
+    confidence: [100]
   };
 
   return { detectedCode, searchResult };

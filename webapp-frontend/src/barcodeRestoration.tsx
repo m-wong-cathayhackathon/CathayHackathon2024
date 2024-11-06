@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
-import { scanBarcode, searchByCode, searchByDescription, processImage } from "./components/ApiFetch"
+import { scanBarcode, searchByCode, searchByDescription, processImage, checkCodeValid } from "./components/ApiFetch"
 import { retryImageProcess } from "./components/ApiFetch"
 
 export default function CargoScanner() {
@@ -19,7 +19,7 @@ export default function CargoScanner() {
     confidence?: number[]
   }>(null)
   const [descriptionResults, setDescriptionResults] = useState<null | {
-    matches: Array<{ awb: string; confidence: number }>
+    matches: Array<{  id: string; description: string; dimensions: string;  }>
   }>(null)
   const [activeInput, setActiveInput] = useState("")
   const [dimensions, setDimensions] = useState({ length: "", width: "", height: "" })
@@ -46,8 +46,12 @@ export default function CargoScanner() {
     if (!code) return
     setIsScanning(true)
     try {
-      const result = await searchByCode(code)
-      setSearchResults(result)
+      const result = await checkCodeValid(code)
+      if(result.valid) {
+        alert("The code is correct")
+      } else {
+        alert(result.reason)
+      }
     } catch (error) {
       console.error("Error searching by code:", error)
     } finally {
@@ -176,8 +180,8 @@ export default function CargoScanner() {
                 </div>
               )}
 
-              {/* <div className="space-y-2">
-                <Label htmlFor="manual-code">Manual Code Entry</Label>
+              <div className="space-y-2">
+                <Label htmlFor="manual-code">Manual Code Check</Label>
                 <div className="flex gap-2">
                   <Input
                     id="manual-code"
@@ -193,7 +197,7 @@ export default function CargoScanner() {
                     <Search className="h-4 w-4" />
                   </Button>
                 </div>
-              </div> */}
+              </div>
 
               {searchResults && (
                 <div className="space-y-4 pt-4">
@@ -282,11 +286,11 @@ export default function CargoScanner() {
                 Search
               </Button>
 
-              {descriptionResults && (
+              {/* {descriptionResults && (
                 <div className="space-y-2 pt-4">
                   <Label>Matching AWB Numbers:</Label>
                   {descriptionResults.matches.map((match) => (
-                    <div key={match.awb} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 border rounded-lg">
+                    <div key={match.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 border rounded-lg">
                       <span className="font-mono text-sm sm:text-base">{match.awb}</span>
                       <div className="flex items-center gap-2 w-full sm:w-auto">
                         <Progress value={match.confidence} className="flex-1" />
@@ -297,7 +301,8 @@ export default function CargoScanner() {
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
+              
             </CardContent>
           </Card>
         </TabsContent>
